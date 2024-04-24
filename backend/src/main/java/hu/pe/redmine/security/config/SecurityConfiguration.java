@@ -1,5 +1,6 @@
-package hu.pe.redmine.security;
+package hu.pe.redmine.security.config;
 
+import hu.pe.redmine.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(frontendConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/manager/register","/manager/login")
+                    .requestMatchers("/user/register","/user/login")
                     .permitAll()
                     .anyRequest()
                     .authenticated()

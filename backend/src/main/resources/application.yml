@@ -20,10 +20,3 @@ spring:
   logging:
     level:
       org.springframework.security: DEBUG
-
-
-application:
-  security:
-    jwt:
-      secret-key: naskjdhi21unds1uehsi2u1ne712he18hjds891j2dej2198dh912ji
-      expiration: 86400000

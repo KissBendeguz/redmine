@@ -1,4 +1,4 @@
-package hu.pe.redmine.security;
+package hu.pe.redmine.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

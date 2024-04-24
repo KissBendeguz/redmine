@@ -1,6 +1,6 @@
-package hu.pe.redmine.security;
+package hu.pe.redmine.security.config;
 
-import hu.pe.redmine.repositories.ManagerRepository;
+import hu.pe.redmine.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class AppConfiguration {
 
-    private final ManagerRepository managerRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService authenticatedUser(){
-        return email -> managerRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        return email -> userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 
     @Bean

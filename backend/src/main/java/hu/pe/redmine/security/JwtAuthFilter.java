@@ -17,7 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
 
 @Component
 @RequiredArgsConstructor

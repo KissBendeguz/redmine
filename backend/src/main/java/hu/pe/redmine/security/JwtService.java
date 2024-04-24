@@ -17,12 +17,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    @Value("${application.security.jwt.secret-key}")
-    private String ENCRYPTION_KEY;
-    @Value("${application.security.jwt.expiration}")
-    private long jwtExpiration;
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private long refreshExpiration;
+    private final String ENCRYPTION_KEY = "naskjdhi21unds1uehsi2u1ne712he18hjds891j2dej2198dh912ji";
+    private final long jwtExpiration = 86400000L;
 
     public String generateToken(UserDetails user){
         return generateToken(new HashMap<>(),user);

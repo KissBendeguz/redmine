@@ -1,11 +1,11 @@
 package hu.pe.redmine.controllers;
 
 import hu.pe.redmine.entities.Manager;
-import hu.pe.redmine.repositories.ManagerRepository;
-import hu.pe.redmine.security.AuthenticationRequest;
-import hu.pe.redmine.security.AuthenticationResponse;
+import hu.pe.redmine.repositories.UserRepository;
+import hu.pe.redmine.security.dto.AuthenticationRequest;
+import hu.pe.redmine.security.dto.AuthenticationResponse;
 import hu.pe.redmine.security.JwtService;
-import hu.pe.redmine.security.RegisterRequest;
+import hu.pe.redmine.security.dto.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,15 +17,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-
 @RestController
 @CrossOrigin
-@RequestMapping("/manager")
+@RequestMapping("/user")
 @RequiredArgsConstructor
-public class ManagerController {
+public class UserController {
     @Autowired
-    private final ManagerRepository managerRepository;
+    private final UserRepository userRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
@@ -36,7 +34,7 @@ public class ManagerController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
 
-        if(managerRepository.findByEmail(request.getEmail()).isPresent()){
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
@@ -45,7 +43,7 @@ public class ManagerController {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-        managerRepository.save(user);
+        userRepository.save(user);
 
         String token = jwtService.generateToken(user);
         return ResponseEntity.ok(
@@ -68,7 +66,7 @@ public class ManagerController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Manager user = managerRepository.findByEmail(request.getEmail()).orElseThrow();
+        Manager user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = jwtService.generateToken(user);
         return ResponseEntity.ok(
                 AuthenticationResponse.builder()
@@ -78,7 +76,7 @@ public class ManagerController {
     }
 
     @GetMapping
-    public ResponseEntity<Manager> getAuthenticatedManager(@AuthenticationPrincipal Manager authenticatedUser){
+    public ResponseEntity<Manager> getAuthenticatedUser(@AuthenticationPrincipal Manager authenticatedUser){
         return ResponseEntity.ok(authenticatedUser);
     }
 }
