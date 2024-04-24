@@ -21,6 +21,18 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User otherUser = (User) obj;
+        return id != null && id.equals(otherUser.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
