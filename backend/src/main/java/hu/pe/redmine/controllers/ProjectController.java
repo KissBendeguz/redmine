@@ -1,8 +1,10 @@
 package hu.pe.redmine.controllers;
 
+import hu.pe.redmine.entities.ProjectType;
 import hu.pe.redmine.entities.User;
 import hu.pe.redmine.entities.Project;
 import hu.pe.redmine.repositories.ProjectRepository;
+import hu.pe.redmine.repositories.ProjectTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,34 @@ public class ProjectController {
 
     @Autowired
     private final ProjectRepository projectRepository;
+    @Autowired
+    private final ProjectTypeRepository projectTypeRepository;
 
+    @PostMapping
+    public ResponseEntity<Project> createProject(@AuthenticationPrincipal User authenticatedUser, @RequestBody Project project) {
+        if (project == null || project.getName() == null || project.getDescription() == null || project.getType() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ProjectType projectType = project.getType();
+        Optional<ProjectType> existingProjectType = projectTypeRepository.findByName(projectType.getName());
+        if (existingProjectType.isEmpty()) {
+            projectTypeRepository.save(projectType);
+        } else {
+            project.setType(existingProjectType.get());
+        }
+
+        Project newProject = Project.builder()
+                .name(project.getName())
+                .description(project.getDescription())
+                .developers(new HashSet<>())
+                .type(project.getType())
+                .build();
+
+        Project savedProject = projectRepository.save(newProject);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Project> getProjectById(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id){
         Optional<Project> oProject = projectRepository.findById(id);
