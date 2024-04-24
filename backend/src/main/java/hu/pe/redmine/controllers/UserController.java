@@ -1,6 +1,6 @@
 package hu.pe.redmine.controllers;
 
-import hu.pe.redmine.entities.Manager;
+import hu.pe.redmine.entities.User;
 import hu.pe.redmine.repositories.UserRepository;
 import hu.pe.redmine.security.dto.AuthenticationRequest;
 import hu.pe.redmine.security.dto.AuthenticationResponse;
@@ -38,7 +38,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        Manager user = Manager.builder()
+        User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -66,7 +66,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Manager user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = jwtService.generateToken(user);
         return ResponseEntity.ok(
                 AuthenticationResponse.builder()
@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Manager> getAuthenticatedUser(@AuthenticationPrincipal Manager authenticatedUser){
+    public ResponseEntity<User> getAuthenticatedUser(@AuthenticationPrincipal User authenticatedUser){
         return ResponseEntity.ok(authenticatedUser);
     }
 }

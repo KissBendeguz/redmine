@@ -15,7 +15,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="managers")
-public class Manager extends BaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
     private String name;
     private String password;
     private String email;

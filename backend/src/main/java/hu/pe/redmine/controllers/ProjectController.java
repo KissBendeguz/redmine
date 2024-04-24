@@ -1,6 +1,6 @@
 package hu.pe.redmine.controllers;
 
-import hu.pe.redmine.entities.Manager;
+import hu.pe.redmine.entities.User;
 import hu.pe.redmine.entities.Project;
 import hu.pe.redmine.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class ProjectController {
     private final ProjectRepository projectRepository;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getProjectById(@AuthenticationPrincipal Manager authenticatedUser, @PathVariable Long id){
+    public ResponseEntity<Project> getProjectById(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id){
         Optional<Project> oProject = projectRepository.findById(id);
         if(oProject.isEmpty()){
             return ResponseEntity
@@ -37,14 +37,14 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<Set<Project>> getProjects(@AuthenticationPrincipal Manager authenticatedUser){
+    public ResponseEntity<Set<Project>> getProjects(@AuthenticationPrincipal User authenticatedUser){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new HashSet<>(projectRepository.findAll()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProject(@AuthenticationPrincipal Manager authenticatedUser,Long id){
+    public ResponseEntity<?> deleteProject(@AuthenticationPrincipal User authenticatedUser, Long id){
         Optional<Project> oProject = projectRepository.findById(id);
         if(oProject.isEmpty()){
             return ResponseEntity

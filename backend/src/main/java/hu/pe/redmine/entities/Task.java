@@ -23,6 +23,6 @@ public class Task extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
-    private Manager manager;
+    private User manager;
 
 }
