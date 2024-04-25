@@ -1,1 +1,1 @@
-![PDF](./redmine.pdf)
+![Task](./redmine.jpg)
