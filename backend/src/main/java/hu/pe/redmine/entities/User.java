@@ -1,5 +1,6 @@
 package hu.pe.redmine.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -17,6 +18,7 @@ import java.util.Collection;
 @Table(name="managers")
 public class User extends BaseEntity implements UserDetails {
     private String name;
+    @JsonIgnore
     private String password;
     private String email;
 
@@ -33,6 +35,7 @@ public class User extends BaseEntity implements UserDetails {
         return id != null ? id.hashCode() : 0;
     }
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
@@ -43,21 +46,25 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

@@ -23,7 +23,7 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "type_id")
     private ProjectType type;
 
-    @JsonIgnore
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "project_developers",

@@ -73,7 +73,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProject(@AuthenticationPrincipal User authenticatedUser, Long id){
+    public ResponseEntity<?> deleteProject(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id){
         Optional<Project> oProject = projectRepository.findById(id);
         if(oProject.isEmpty()){
             return ResponseEntity

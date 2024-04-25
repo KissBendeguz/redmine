@@ -1,10 +1,13 @@
 package hu.pe.redmine.controllers;
 
+import hu.pe.redmine.entities.Developer;
 import hu.pe.redmine.entities.Project;
 import hu.pe.redmine.entities.Task;
 import hu.pe.redmine.entities.User;
+import hu.pe.redmine.repositories.DeveloperRepository;
 import hu.pe.redmine.repositories.ProjectRepository;
 import hu.pe.redmine.repositories.TaskRepository;
+import hu.pe.redmine.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,19 +30,31 @@ public class TaskController {
     @Autowired
     private final TaskRepository taskRepository;
 
-    @PostMapping("/{id}")
-    public ResponseEntity<Task> createTask(@AuthenticationPrincipal User authenticatedUser,@PathVariable Long id, @RequestBody Task task){
+    @Autowired
+    private final UserRepository userRepository;
+
+    @Autowired
+    private final DeveloperRepository developerRepository;
+
+    @PostMapping("/{id}/{devId}")
+    public ResponseEntity<Task> createTask(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id, @PathVariable Long devId, @RequestBody Task task){
         if (task == null || task.getName() == null || task.getDescription() == null || task.getDeadline() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .build();
         }
         Optional<Project> oProject = projectRepository.findById(id);
-        if(oProject.isEmpty()){
+        Optional<Developer> oDeveloper = developerRepository.findById(id);
+        if(oProject.isEmpty() || oDeveloper.isEmpty()){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();
         }
+
+        oProject.get().getDevelopers().add(oDeveloper.get());
+        projectRepository.save(oProject.get());
+
+        authenticatedUser = userRepository.save(authenticatedUser);
 
         Task newTask = Task.builder()
                 .name(task.getName())
@@ -89,7 +104,7 @@ public class TaskController {
         }
         taskRepository.deleteById(id);
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 

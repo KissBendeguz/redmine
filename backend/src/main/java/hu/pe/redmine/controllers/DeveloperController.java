@@ -4,6 +4,7 @@ import hu.pe.redmine.entities.Developer;
 import hu.pe.redmine.entities.Project;
 import hu.pe.redmine.entities.User;
 import hu.pe.redmine.repositories.DeveloperRepository;
+import hu.pe.redmine.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class DeveloperController {
         Developer newDeveloper = Developer.builder()
                 .name(developer.getName())
                 .email(developer.getEmail())
+                .projects(new HashSet<>())
                 .build();
 
         return ResponseEntity
