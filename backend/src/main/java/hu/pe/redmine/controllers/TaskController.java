@@ -44,7 +44,7 @@ public class TaskController {
                     .build();
         }
         Optional<Project> oProject = projectRepository.findById(id);
-        Optional<Developer> oDeveloper = developerRepository.findById(id);
+        Optional<Developer> oDeveloper = developerRepository.findById(devId);
         if(oProject.isEmpty() || oDeveloper.isEmpty()){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
