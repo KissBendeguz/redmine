@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -36,23 +38,19 @@ public class TaskController {
     @Autowired
     private final DeveloperRepository developerRepository;
 
-    @PostMapping("/{id}/{devId}")
-    public ResponseEntity<Task> createTask(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id, @PathVariable Long devId, @RequestBody Task task){
+    @PostMapping("/{id}")
+    public ResponseEntity<Task> createTask(@AuthenticationPrincipal User authenticatedUser, @PathVariable Long id, @RequestBody Task task){
         if (task == null || task.getName() == null || task.getDescription() == null || task.getDeadline() == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .build();
         }
         Optional<Project> oProject = projectRepository.findById(id);
-        Optional<Developer> oDeveloper = developerRepository.findById(devId);
-        if(oProject.isEmpty() || oDeveloper.isEmpty()){
+        if(oProject.isEmpty()){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();
         }
-
-        oProject.get().getDevelopers().add(oDeveloper.get());
-        projectRepository.save(oProject.get());
 
         authenticatedUser = userRepository.save(authenticatedUser);
 
@@ -94,6 +92,28 @@ public class TaskController {
                 .status(HttpStatus.OK)
                 .body(taskRepository.findByManager(authenticatedUser));
     }
+
+    @GetMapping("/deadline")
+    public ResponseEntity<Set<Task>> getDeadlineTasks(@AuthenticationPrincipal User authenticatedUser) {
+
+        Date currentTime = new Date();
+        Date alertTime = new Date(currentTime.getTime() + 3 * 24 * 60 * 60 * 1000);
+
+        Set<Task> tasks = taskRepository.findByManager(authenticatedUser);
+        Set<Task> tasksCloseToDeadline = new HashSet<>();
+
+        for (Task task : tasks) {
+            if (task.getDeadline().before(alertTime)) {
+                tasksCloseToDeadline.add(task);
+            }
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(tasksCloseToDeadline);
+    }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@AuthenticationPrincipal User authenticatedUser,@PathVariable Long id){
